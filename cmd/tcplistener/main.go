@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"httpfromtcp/internal/request"
 	"io"
 	"net"
 	"strings"
@@ -56,9 +57,20 @@ func main() {
 			continue
 		}
 		println("accepted connection")
-		for line := range getLinesChannel(conn) {
-			fmt.Println(line)
+
+		req, err := request.RequestFromReader(conn)
+		if err != nil {
+			println("error parsing request: " + err.Error())
+			conn.Close()
+			continue
 		}
+
+		fmt.Println("Request line:")
+		fmt.Printf("- Method: %s\n", req.RequestLine.Method)
+		fmt.Printf("- Target: %s\n", req.RequestLine.RequestTarget)
+		fmt.Printf("- Version: %s\n", req.RequestLine.HttpVersion)
+
+		conn.Close()
 
 	}
 
