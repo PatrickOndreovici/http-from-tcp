@@ -44,6 +44,9 @@ func RequestFromReader(reader io.Reader) (*Request, error) {
 	if len(parts) != 3 {
 		return nil, errors.New("invalid request line: " + line + "")
 	}
+	if parts[2] != "HTTP/1.1" || parts[1][0] != '/' {
+		return nil, errors.New("invalid request line: " + line + "")
+	}
 	request := &Request{
 		Headers: make(map[string]string),
 		Body:    []byte{},
