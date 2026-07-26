@@ -8,6 +8,7 @@ import (
 )
 
 func getLinesChannel(f io.ReadCloser) <-chan string {
+
 	ch := make(chan string)
 
 	fn := func() {
